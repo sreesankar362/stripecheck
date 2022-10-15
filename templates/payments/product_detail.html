@@ -1,0 +1,61 @@
+<html>
+  <head>
+    <title>Buy cool new product</title>
+    <script src="https://js.stripe.com/v3/"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+  </head>
+  <body>
+<div class="container">
+<h1>Place an order here</h1>
+<!--    <button type="button" class="btn btn-lg btn-primary" >Checkout</button>-->
+    <div class="row">
+        <div class="col-4">
+            {% for m in mem %}
+                <div class="card mt-5">
+                    {{ m.membership_days }}
+                    {{ m.price }}
+                    <button class="btn btn-success"   id="checkout-button" onclick="subscribe({{m.id}})" >Subscribe</button>
+                    {{m.id}}
+                </div>
+            {% endfor %}
+        </div>
+
+    </div>
+
+</div>
+     <script type="text/javascript">
+
+        var stripe = Stripe('pk_test_51LsNhRSBeZkgYlGWZeVlpGmXC9g1VW7cQ5pgyIgODPMzEcj98MKLTxDDBjc2npuWJlq2Xj6xvg5e9Z5YVQXrzowi00JNPTx9U6');
+        var checkoutButton = document.getElementById('checkout-button');
+
+        function subscribe(id){
+        console.log("clicked")
+        console.log(id)
+        data = JSON.stringify({
+                id : id
+                })
+        fetch('{% url 'checkout' %}', {
+                                            method: 'POST',
+                                            body: data
+                                            })
+                                            .then(function(response) {
+                                              return response.json();
+                                            })
+                                                .then(function(session) {
+                                                  return stripe.redirectToCheckout({ sessionId: session.id });
+                                                })
+                                                    .then(function(result) {
+                                                      // If `redirectToCheckout` fails due to a browser or network
+                                                      // error, you should display the localized error message to your
+                                                      // customer using `error.message`.
+                                                      if (result.error) {
+                                                        alert(result.error.message);
+                                                      }
+                                                    })
+                                                        .catch(function(error) {
+                                                          console.error('Error:', error);
+                                                        });
+        };
+    </script>
+  </body>
+</html>
