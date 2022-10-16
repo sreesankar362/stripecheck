@@ -16,6 +16,7 @@ def create_checkout_session(request, **kwargs):
     data = json.loads(request.body.decode("utf-8"))
     id = data['id']
     mem = Membership.objects.get(id=id)
+    print("mem", mem)
     session = stripe.checkout.Session.create(
         payment_method_types=['card'],
         line_items=[{
@@ -32,6 +33,7 @@ def create_checkout_session(request, **kwargs):
         success_url=YOUR_DOMAIN + '/success?session_id={CHECKOUT_SESSION_ID}',
         cancel_url=YOUR_DOMAIN + '/cancel.html',
     )
+    print("session", session.id)
     return JsonResponse({'id': session.id})
 
 
