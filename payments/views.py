@@ -7,7 +7,7 @@ from django.views.decorators.csrf import csrf_exempt
 from payments.models import Membership
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
-YOUR_DOMAIN = 'http://127.0.0.1:8000'
+YOUR_DOMAIN = 'https://stripeherokku.herokuapp.com/'
 
 
 @csrf_exempt
